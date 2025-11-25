@@ -2,6 +2,8 @@
 #include <iostream>
 #include <iomanip>
 
+using namespace std;
+
 Graph::Graph() : numVertices(0) {}
 
 Graph::Graph(int numVertices) : numVertices(numVertices)
@@ -14,7 +16,7 @@ void Graph::addEdge(int source, int target, double distance, double time, double
 {
     if (source < 0 || source >= numVertices || target < 0 || target >= numVertices)
     {
-        std::cerr << "Error: Invalid vertices!" << std::endl;
+        cerr << "Error: Invalid vertices!" << endl;
         return;
     }
 
@@ -45,14 +47,14 @@ void Graph::removeEdge(int source, int target)
 
 int Graph::getNumVertices() const { return numVertices; }
 
-const std::vector<Edge> &Graph::getAdjacents(int vertex) const
+const vector<Edge> &Graph::getAdjacents(int vertex) const
 {
     return adjList[vertex];
 }
 
-std::vector<Edge> Graph::getAllEdges() const
+vector<Edge> Graph::getAllEdges() const
 {
-    std::vector<Edge> edges;
+    vector<Edge> edges;
     for (int i = 0; i < numVertices; i++)
     {
         for (const Edge &edge : adjList[i])
@@ -61,17 +63,17 @@ std::vector<Edge> Graph::getAllEdges() const
     return edges;
 }
 
-void Graph::setVertexName(int vertex, const std::string &name)
+void Graph::setVertexName(int vertex, const string &name)
 {
     if (vertex >= 0 && vertex < numVertices)
         vertexNames[vertex] = name;
 }
 
-std::string Graph::getVertexName(int vertex) const
+string Graph::getVertexName(int vertex) const
 {
     if (vertex >= 0 && vertex < numVertices && !vertexNames[vertex].empty())
         return vertexNames[vertex];
-    return std::to_string(vertex);
+    return to_string(vertex);
 }
 
 bool Graph::edgeExists(int source, int target) const
@@ -89,18 +91,17 @@ bool Graph::edgeExists(int source, int target) const
 
 void Graph::printGraph() const
 {
-    std::cout << "\n=== GRAPH ===" << std::endl;
     for (int i = 0; i < numVertices; i++)
     {
-        std::cout << getVertexName(i) << " -> ";
+        cout << getVertexName(i) << ": ";
         for (const Edge &edge : adjList[i])
         {
-            std::cout << "(" << getVertexName(edge.getTarget())
-                      << ", D:" << edge.getDistance()
-                      << ", T:" << edge.getTime()
-                      << ", C:" << edge.getCost() << ") ";
+            cout << "(" << getVertexName(edge.getTarget())
+                 << ", D:" << edge.getDistance()
+                 << ", T:" << edge.getTime()
+                 << ", C:" << edge.getCost() << ") ";
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 

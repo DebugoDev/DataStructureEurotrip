@@ -38,7 +38,7 @@ struct KruskalResult
 class Kruskal
 {
 public:
-    static KruskalResult run(const Graph &graph, const std::string &criterion = "distance");
+    static KruskalResult run(const Graph &graph, const std::string &criteria_ = "DISTANCE");
 
     static void printResult(const Graph &graph, const KruskalResult &result);
 };

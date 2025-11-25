@@ -3,6 +3,8 @@
 #include <iostream>
 #include <iomanip>
 
+using namespace std;
+
 UnionFind::UnionFind(int n)
 {
     parent.resize(n);
@@ -39,14 +41,14 @@ bool UnionFind::unite(int x, int y)
     return true;
 }
 
-KruskalResult Kruskal::run(const Graph &graph, const std::string &criterion)
+KruskalResult Kruskal::run(const Graph &graph, const string &criteria_)
 {
     KruskalResult result;
 
-    std::vector<Edge> edges = graph.getAllEdges();
+    vector<Edge> edges = graph.getAllEdges();
 
-    std::sort(edges.begin(), edges.end(), [&criterion](const Edge &a, const Edge &b)
-              { return a.getWeight(criterion) < b.getWeight(criterion); });
+    sort(edges.begin(), edges.end(), [&criteria_](const Edge &a, const Edge &b)
+              { return a.getWeight(criteria_) < b.getWeight(criteria_); });
 
     UnionFind uf(graph.getNumVertices());
 
@@ -70,27 +72,24 @@ KruskalResult Kruskal::run(const Graph &graph, const std::string &criterion)
 
 void Kruskal::printResult(const Graph &graph, const KruskalResult &result)
 {
-    std::cout << "\n=== MINIMUM SPANNING TREE (KRUSKAL) ===" << std::endl;
-
     if (!result.success)
     {
-        std::cout << "Could not construct the MST!" << std::endl;
+        cout << "Could not construct the MST!" << endl;
         return;
     }
 
-    std::cout << "Selected edges:" << std::endl;
+    cout << "Selected edges:" << endl;
     for (const Edge &edge : result.edges)
     {
-        std::cout << graph.getVertexName(edge.getSource()) << " -- "
+        cout << graph.getVertexName(edge.getSource()) << " -- "
                   << graph.getVertexName(edge.getTarget())
                   << " (D:" << edge.getDistance()
                   << ", T:" << edge.getTime()
-                  << ", C:" << edge.getCost() << ")" << std::endl;
+                  << ", C:" << edge.getCost() << ")" << endl;
     }
 
-    std::cout << std::fixed << std::setprecision(2);
-    std::cout << "\nMST Totals:" << std::endl;
-    std::cout << "Total Distance: " << result.totalDistance << " km" << std::endl;
-    std::cout << "Total Time: " << result.totalTime << " hours" << std::endl;
-    std::cout << "Total Cost: $" << result.totalCost << std::endl;
+    cout << fixed << setprecision(2) << endl;
+    cout << "Total Distance: " << result.totalDistance << " km" << endl;
+    cout << "Total Time: " << result.totalTime << " hours" << endl;
+    cout << "Total Cost: $" << result.totalCost << endl;
 }

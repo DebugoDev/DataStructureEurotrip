@@ -23,7 +23,7 @@ struct DijkstraResult
 class Dijkstra
 {
 public:
-    static DijkstraResult run(const Graph &graph, int source, const std::string &criterion = "distance");
+    static DijkstraResult run(const Graph &graph, int source, const std::string &criteria_ = "DISTANCE");
 
     static std::vector<int> rebuildPath(const DijkstraResult &result, int target);
 

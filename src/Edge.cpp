@@ -1,6 +1,8 @@
 ﻿#include "../include/Edge.h"
 #include <stdexcept>
 
+using namespace std;
+
 Edge::Edge() : source(0), target(0), distance(0.0), time(0.0), cost(0.0) {}
 
 Edge::Edge(int source, int target, double distance, double time, double cost)
@@ -18,15 +20,15 @@ void Edge::setDistance(double distance) { this->distance = distance; }
 void Edge::setTime(double time) { this->time = time; }
 void Edge::setCost(double cost) { this->cost = cost; }
 
-double Edge::getWeight(const std::string &criterion) const
+double Edge::getWeight(const std::string &criteria_) const
 {
-    if (criterion == "distance")
+    if (criteria_ == "DISTANCE")
         return distance;
-    if (criterion == "time")
+    if (criteria_ == "TIME")
         return time;
-    if (criterion == "cost")
+    if (criteria_ == "COST")
         return cost;
-    throw std::invalid_argument("Invalid criterion. Use 'distance', 'time', or 'cost'");
+    throw std::invalid_argument("Invalid criteria_. Use 'distance', 'time', or 'cost'");
 }
 
 bool Edge::operator<(const Edge &other) const

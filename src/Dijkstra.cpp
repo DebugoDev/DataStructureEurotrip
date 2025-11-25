@@ -2,6 +2,9 @@
 #include <queue>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
+
+using namespace std;
 
 struct DijkstraNode
 {
@@ -14,7 +17,7 @@ struct DijkstraNode
     }
 };
 
-DijkstraResult Dijkstra::run(const Graph &graph, int source, const std::string &criterion)
+DijkstraResult Dijkstra::run(const Graph &graph, int source, const string &criteria_)
 {
     int n = graph.getNumVertices();
     DijkstraResult result(n);
@@ -22,12 +25,12 @@ DijkstraResult Dijkstra::run(const Graph &graph, int source, const std::string &
     if (source < 0 || source >= n)
         return result;
 
-    std::priority_queue<DijkstraNode, std::vector<DijkstraNode>, std::greater<DijkstraNode>> pq;
+    priority_queue<DijkstraNode, vector<DijkstraNode>, greater<DijkstraNode>> pq;
 
     result.distances[source] = 0.0;
     pq.push({source, 0.0});
 
-    std::vector<bool> visited(n, false);
+    vector<bool> visited(n, false);
 
     while (!pq.empty())
     {
@@ -42,7 +45,7 @@ DijkstraResult Dijkstra::run(const Graph &graph, int source, const std::string &
         for (const Edge &edge : graph.getAdjacents(u))
         {
             int v = edge.getTarget();
-            double weight = edge.getWeight(criterion);
+            double weight = edge.getWeight(criteria_);
 
             if (result.distances[u] + weight < result.distances[v])
             {
@@ -57,9 +60,9 @@ DijkstraResult Dijkstra::run(const Graph &graph, int source, const std::string &
     return result;
 }
 
-std::vector<int> Dijkstra::rebuildPath(const DijkstraResult &result, int target)
+vector<int> Dijkstra::rebuildPath(const DijkstraResult &result, int target)
 {
-    std::vector<int> path;
+    vector<int> path;
 
     if (result.predecessors[target] == -1 && result.distances[target] != 0.0)
         return path;
@@ -67,11 +70,11 @@ std::vector<int> Dijkstra::rebuildPath(const DijkstraResult &result, int target)
     for (int v = target; v != -1; v = result.predecessors[v])
         path.push_back(v);
 
-    std::reverse(path.begin(), path.end());
+    reverse(path.begin(), path.end());
     return path;
 }
 
-void Dijkstra::calculatePathCosts(const Graph &graph, const std::vector<int> &path,
+void Dijkstra::calculatePathCosts(const Graph &graph, const vector<int> &path,
                                   double &totalDistance, double &totalTime, double &totalCost)
 {
     totalDistance = totalTime = totalCost = 0.0;
@@ -94,35 +97,33 @@ void Dijkstra::calculatePathCosts(const Graph &graph, const std::vector<int> &pa
     }
 }
 
-void Dijkstra::printResult(const Graph &graph, const DijkstraResult &result,
-                           int source, int target)
+void Dijkstra::printResult(const Graph &graph, const DijkstraResult &result, int source, int target)
 {
-    std::cout << "\n=== DIJKSTRA RESULT ===" << std::endl;
-    std::cout << "Source: " << graph.getVertexName(source) << std::endl;
-    std::cout << "Destination: " << graph.getVertexName(target) << std::endl;
+    cout << "Source: " << graph.getVertexName(source) << endl;
+    cout << "Destination: " << graph.getVertexName(target) << endl;
 
-    std::vector<int> path = rebuildPath(result, target);
+    vector<int> path = rebuildPath(result, target);
 
     if (path.empty())
     {
-        std::cout << "No available path!" << std::endl;
+        cout << "No available path!" << endl;
         return;
     }
 
-    std::cout << "Path: ";
+    cout << "Path: ";
     for (size_t i = 0; i < path.size(); i++)
     {
-        std::cout << graph.getVertexName(path[i]);
+        cout << graph.getVertexName(path[i]);
         if (i < path.size() - 1)
-            std::cout << " -> ";
+            cout << " -> ";
     }
-    std::cout << std::endl;
+    cout << endl;
 
     double totalDistance, totalTime, totalCost;
     calculatePathCosts(graph, path, totalDistance, totalTime, totalCost);
 
-    std::cout << std::fixed << std::setprecision(2);
-    std::cout << "Total Distance: " << totalDistance << " km" << std::endl;
-    std::cout << "Total Time: " << totalTime << " hours" << std::endl;
-    std::cout << "Total Cost: $" << totalCost << std::endl;
+    cout << fixed << setprecision(2);
+    cout << "Total Distance: " << totalDistance << " km" << endl;
+    cout << "Total Time: " << totalTime << " hours" << endl;
+    cout << "Total Cost: $" << totalCost << endl;
 }

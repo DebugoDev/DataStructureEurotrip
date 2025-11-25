@@ -28,7 +28,7 @@ public:
     void setTime(double time);
     void setCost(double cost);
 
-    double getWeight(const std::string &criterion) const;
+    double getWeight(const std::string &criteria_) const;
 
     bool operator<(const Edge &other) const;
 };
