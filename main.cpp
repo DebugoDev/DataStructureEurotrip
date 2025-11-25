@@ -137,7 +137,7 @@ int main()
     printAdjacencyMatrix(graph, "DISTANCE");
     printAdjacencyMatrix(graph, "TIME");
 
-    printSeparator("CAMINHOS MINIMOS - DIJKSTRA", '=', 100);
+    printSeparator("CAMINHOS MINIMOS (Brasil -> Coliseu) - DIJKSTRA", '=', 100);
 
     int source = 0;
     int target = 9;
@@ -188,7 +188,7 @@ int main()
     Dijkstra::calculatePathCosts(graph, pathDistance, distByDist, timeByDist, costByDist);
     Dijkstra::calculatePathCosts(graph, pathTime, distByTime, timeByTime, costByTime);
 
-    cout << "COMPARACAO DE CAMINHOS MINIMOS:" << endl
+    cout << "COMPARACAO DE CAMINHOS MINIMOS (Brasil -> Coliseu):" << endl
          << endl;
     cout << fixed << setprecision(2);
 
