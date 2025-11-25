@@ -103,6 +103,13 @@ Graph createEurotripGraph()
     return graph;
 }
 
+double normalize(double value, double minValue, double maxValue)
+{
+    if (maxValue - minValue == 0)
+        return 0.0;
+    return (value - minValue) / (maxValue - minValue);
+}
+
 int main()
 {
     Graph graph = createEurotripGraph();
@@ -152,17 +159,17 @@ int main()
 
     printSeparator("ARVORE GERADORA MINIMA (AGM) - KRUSKAL", '=', 100);
 
-    printSeparator("CAMINHO COM MENOR CUSTO", '-', 100, BLUE);
+    printSeparator("AGM DE MENOR CUSTO", '-', 100, BLUE);
     KruskalResult mstCost = Kruskal::run(graph, "COST");
     Kruskal::printResult(graph, mstCost);
     cout << endl;
 
-    printSeparator("CAMINHO COM MENOR DISTANCIA", '-', 100, BLUE);
+    printSeparator("AGM DE MENOR DISTANCIA", '-', 100, BLUE);
     KruskalResult mstDistance = Kruskal::run(graph, "DISTANCE");
     Kruskal::printResult(graph, mstDistance);
     cout << endl;
 
-    printSeparator("CAMINHO COM MENOR TEMPO", '-', 100, BLUE);
+    printSeparator("AGM DE MENOR TEMPO", '-', 100, BLUE);
     KruskalResult mstTime = Kruskal::run(graph, "TIME");
     Kruskal::printResult(graph, mstTime);
     cout << endl;
@@ -181,7 +188,7 @@ int main()
     Dijkstra::calculatePathCosts(graph, pathDistance, distByDist, timeByDist, costByDist);
     Dijkstra::calculatePathCosts(graph, pathTime, distByTime, timeByTime, costByTime);
 
-    cout << "COMPARACAO DE CAMINHOS MINIMOS (Brasil -> Coliseu):\n"
+    cout << "COMPARACAO DE CAMINHOS MINIMOS:" << endl
          << endl;
     cout << fixed << setprecision(2);
 
@@ -232,21 +239,65 @@ int main()
          << setw(15) << mstTime.totalTime << endl;
 
     cout << endl;
+
     printSeparator("CONCLUSOES", '=', 100);
 
-    cout << "1. CAMINHO MINIMO (Dijkstra - Brasil ate Coliseu):\n"
-         << endl;
-    cout << "   - Menor Custo: EUR " << costByCost << endl;
-    cout << "   - Menor Distancia: " << distByDist << endl;
-    cout << "   - Menor Tempo: " << timeByTime << endl;
+    double minCost = min(costByCost, min(costByDist, costByTime));
+    double maxCost = max(costByCost, max(costByDist, costByTime));
+
+    double minDist = min(distByCost, min(distByDist, distByTime));
+    double maxDist = max(distByCost, max(distByDist, distByTime));
+
+    double minTime = min(timeByCost, min(timeByDist, timeByTime));
+    double maxTime = max(timeByCost, max(timeByDist, timeByTime));
+
+    double weightCost = 1.0 / 3.0, weightDist = 1.0 / 3.0,  weightTime = 1.0 / 3.0;
+
+    double scoreCost = weightCost * normalize(costByCost, minCost, maxCost) +
+                       weightDist * normalize(distByCost, minDist, maxDist) +
+                       weightTime * normalize(timeByCost, minTime, maxTime);
+
+    double scoreDist = weightCost * normalize(costByDist, minCost, maxCost) +
+                       weightDist * normalize(distByDist, minDist, maxDist) +
+                       weightTime * normalize(timeByDist, minTime, maxTime);
+
+    double scoreTime = weightCost * normalize(costByTime, minCost, maxCost) +
+                       weightDist * normalize(distByTime, minDist, maxDist) +
+                       weightTime * normalize(timeByTime, minTime, maxTime);
+
+    string bestCriterion = "CUSTO";
+    double bestScore = scoreCost;
+
+    if (scoreDist < bestScore)
+    {
+        bestCriterion = "DISTANCIA";
+        bestScore = scoreDist;
+    }
+    if (scoreTime < bestScore)
+    {
+        bestCriterion = "TEMPO";
+        bestScore = scoreTime;
+    }
+
+    cout << "AVALIACAO DE CUSTO-BENEFICIO:\n" << endl;
+
+    cout << setw(15) << "Criterio"
+         << setw(20) << "Pontuacao (0-1)" << endl;
+    cout << string(40, '-') << endl;
+
+    cout << setw(15) << "Custo"
+         << setw(20) << scoreCost << endl;
+
+    cout << setw(15) << "Distancia"
+         << setw(20) << scoreDist << endl;
+
+    cout << setw(15) << "Tempo"
+         << setw(20) << scoreTime << endl;
+
     cout << endl;
 
-    cout << "2. ARVORE GERADORA MINIMA (Kruskal - Conectar todos os destinos):\n"
-         << endl;
-    cout << "   - AGM por Custo: EUR " << mstCost.totalCost << " (rota mais economica)" << endl;
-    cout << "   - AGM por Distancia: " << mstDistance.totalDistance << " km (rota mais curta)" << endl;
-    cout << "   - AGM por Tempo: " << mstTime.totalTime << " h (rota mais rapida)" << endl;
-    cout << endl;
+    cout << "Melhor custo-beneficio geral: " << bestCriterion << "." << endl;
+    cout << "Esse criterio obteve o melhor equilibrio entre os tres fatores.\n" << endl;
 
     return 0;
 }
